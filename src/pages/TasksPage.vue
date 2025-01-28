@@ -15,10 +15,21 @@
                     <Tasks :tasks="uncompletedTasks" />
                     
                     <!-- show toggle button -->
+                     <div class="text-center my-3" v-show="showToggleCompletedBtn">
+                        <button
+                          @click="showCompletedTasks = !showCompletedTasks"
+                          class="btn btn-sm btn-secondary"
+                        >
+                            <span v-if="!showCompletedTasks">Show completed</span>
+                            <span v-else>Hide completed</span>
+                        </button>
+                     </div>
                     
                     <!-- list of completed tasks -->
-                    <div>Completed Tasks</div>
-                    <Tasks :tasks="completedTasks" />
+                    <Tasks
+                      :show="completedTasksIsVisible && showCompletedTasks"
+                      :tasks="completedTasks"
+                    />
                 </div>
             </div>
         </div>
@@ -27,21 +38,32 @@
     
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { allTasks } from "../http/task-api"
+import { allTasks } from "../http/task-api";
 import Tasks from "@/components/tasks/Tasks.vue";
 
-const tasks = ref([])
+const tasks = ref([]);
 
 onMounted(async() => {
-    const { data } = await allTasks()
-    tasks.value = data.data
-})
+    const { data } = await allTasks();
+    tasks.value = data.data;
+});
 
-const uncompletedTasks = computed(() => tasks.value.filter(task => !task.is_completed))
-const completedTasks = computed(() => tasks.value.filter(task => task.is_completed))
+const showCompletedTasks = ref(false);
+
+const uncompletedTasks = computed(() =>
+    tasks.value.filter(task => !task.is_completed),
+);
+
+const completedTasks = computed(() =>
+    tasks.value.filter(task => task.is_completed),
+);
+
+const showToggleCompletedBtn = computed(() => 
+    uncompletedTasks.value.length > 0 && completedTasks.value.length > 0,
+);
+
+const completedTasksIsVisible = computed(() =>
+    uncompletedTasks.value.length === 0 || completedTasks.value.length > 0,
+);
 
 </script>
-    
-<style>
-    
-</style>
