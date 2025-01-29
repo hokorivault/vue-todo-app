@@ -14,7 +14,13 @@
                     @dblclick="$event => isEdit = true"
                 >
                     <div class="relative" v-if="isEdit">
-                        <input class="editable-task" type="text" @keyup.esc="$event => isEdit = false" v-focus/>
+                        <input 
+                            type="text"
+                            class="editable-task"
+                            v-focus
+                            @keyup.esc="$event => isEdit = false" 
+                            @keyup.enter="updateTask"
+                        />
                     </div>
                     <span v-else>{{ task.name }}</span>
                 </div>
@@ -28,11 +34,11 @@
 import { computed, ref } from 'vue';
 import TaskActions from './TaskActions.vue';
 
-
-
 const props = defineProps({
     task: Object
 })
+
+const emit = defineEmits(['updated'])
 
 const isEdit = ref(false);
 
@@ -41,6 +47,14 @@ const completedClass = computed(() => props.task.is_completed ? "completed" : ""
 // custom directive to apply focus to input box
 const vFocus = {
     mounted: (el) => el.focus()
+}
+
+const updateTask = (event) => {
+    const updatedTask = { ...props.task, name: event.target.value };
+    isEdit.value = false;
+    // emit the payload to parent component(s), event name, payload
+    // parent component(s) that have updated custom event named 'updated' will get the updatedTask payload
+    emit('updated', updatedTask)
 }
 
 </script>
