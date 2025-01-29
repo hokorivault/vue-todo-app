@@ -3,9 +3,12 @@
             <div
                 class="d-flex justify-content-start align-items-center"
             >
-                <input
-                    class="form-check-input mt-0" :class="completedClass" 
-                    type="checkbox" :checked="task.is_completed"
+                <input 
+                    type="checkbox" 
+                    class="form-check-input mt-0" 
+                    :class="completedClass" 
+                    :checked="task.is_completed" 
+                    @change="markTaskAsCompleted"
                 />
                 <div
                     class="ms-2 flex-grow-1" 
@@ -39,7 +42,7 @@ const props = defineProps({
     task: Object
 })
 
-const emit = defineEmits(['updated'])
+const emit = defineEmits(['updated', 'completed'])
 
 const isEdit = ref(false);
 
@@ -65,6 +68,10 @@ const undo = () => {
     editingTask.value = props.task.name
 }
 
+const markTaskAsCompleted = (event) => {
+    const updatedTask = { ...props.task, is_completed: !props.task.is_completed };
+    emit('completed', updatedTask)
+}
 </script>
     
 <style>
