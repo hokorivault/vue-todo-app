@@ -18,8 +18,9 @@
                             type="text"
                             class="editable-task"
                             v-focus
-                            @keyup.esc="$event => isEdit = false" 
-                            @keyup.enter="updateTask"
+                            @keyup.esc="undo" 
+                            @keyup.enter="updateTask" 
+                            v-model="editingTask"
                         />
                     </div>
                     <span v-else>{{ task.name }}</span>
@@ -42,6 +43,8 @@ const emit = defineEmits(['updated'])
 
 const isEdit = ref(false);
 
+const editingTask = ref(props.task.name)
+
 const completedClass = computed(() => props.task.is_completed ? "completed" : "")
 
 // custom directive to apply focus to input box
@@ -55,6 +58,11 @@ const updateTask = (event) => {
     // emit the payload to parent component(s), event name, payload
     // parent component(s) that have updated custom event named 'updated' will get the updatedTask payload
     emit('updated', updatedTask)
+}
+
+const undo = () => {
+    isEdit.value = false
+    editingTask.value = props.task.name
 }
 
 </script>
