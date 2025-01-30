@@ -1,5 +1,5 @@
 <template>
-        <main style="min-height: 50vh; margin-top: 2rem">
+    <main style="min-height: 50vh; margin-top: 2rem">
         <div class="container">
             <div class="row">
                 <div class="col-md-8 offset-md-2">
